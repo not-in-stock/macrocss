@@ -24,8 +24,11 @@
    [stylo.util :as u])
   #?(:cljs (:require-macros [stylo.core])))
 
-(defonce styles (atom {}))
 (defonce media-styles (atom {}))
+(defonce
+  ^{:doc "An atom which holds CSS styles for generated classes in a Garden format"}
+  styles
+  (atom {}))
 
 (defonce media (atom {:screen {:screen true}
                       :smartphone {:max-width "415px"}
