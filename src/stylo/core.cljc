@@ -24,7 +24,6 @@
    [stylo.util :as u])
   #?(:cljs (:require-macros [stylo.core])))
 
-(defonce media-styles (atom {}))
 (defonce
   ^{:doc "An atom which holds CSS styles for generated classes in a Garden format"}
   styles
@@ -36,6 +35,10 @@
                       :p-tablets {:max-width "768px"}
                       :l-tablets {:max-width "1025px"}
                       :desktop {:min-width "1200px"}}))
+(defonce
+  ^{:doc "An atom which holds CSS media rules for generated classes in a Garden format"}
+  media-styles
+  (atom {}))
 
 (defn garden-readable
   [media-rules]
