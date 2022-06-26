@@ -40,7 +40,7 @@
   media-styles
   (atom {}))
 
-(defn garden-readable
+(defn- garden-readable
   [media-rules]
   (reduce (fn [acc [f s :as r]]
             (if (string? f)
@@ -55,7 +55,7 @@
                     join-rules
                     garden-readable)]]))
 
-(defn defmediarules
+(defn- defmediarules
   [media]
   (doseq [[k v] media]
     (defmethod rule k [_ & rules]
@@ -77,7 +77,7 @@
   (defmediarules @media)
   @media)
 
-(defn media-rule?
+(defn- media-rule?
   [k]
   (when (keyword? k)
     (-> @media
@@ -85,7 +85,7 @@
         (->> (apply hash-set)
              k))))
 
-(defn create-located-classname
+(defn- create-located-classname
   [env]
   (when-let [ns-name (get-in env [:ns :name])]
     (u/format ".%s-%s-%s"
@@ -93,18 +93,18 @@
               (:line env)
               (:column env))))
 
-(defn create-hashed-classname
+(defn- create-hashed-classname
   [rules]
   (->> rules
        hash
        (str ".c")))
 
-(defn create-classname
+(defn- create-classname
   [env rules]
   (keyword (or (create-located-classname env)
                (create-hashed-classname rules))))
 
-(defn divide-rules
+(defn- divide-rules
   [rules]
   (reduce (fn [acc r]
             (cond
@@ -114,7 +114,7 @@
           {:rules []
            :media-rules []} rules))
 
-(defn inject-media-rules
+(defn- inject-media-rules
   [class-name garden-obj]
   (swap! media-styles dissoc class-name)
   (swap! media-styles assoc-in [class-name
@@ -123,7 +123,7 @@
                                     :media-queries)]
          garden-obj))
 
-(defn create-media-rules
+(defn- create-media-rules
   [class-name media-rules]
   (if-not (empty? media-rules)
     (->> media-rules
@@ -132,14 +132,14 @@
        (mapv (fn [g] (inject-media-rules class-name g))))
     (swap! media-styles dissoc class-name)))
 
-(defn rules-with-location
+(defn- rules-with-location
   [env rules]
   (with-meta (join-rules rules)
     {:location [(:name (:ns env))
                 (:line env)
                 (:column env)]}))
 
-(defn create-rules [env rules]
+(defn- create-rules [env rules]
   (when-not (empty? rules)
     (let [class-name (create-classname env rules)]
       (swap! styles dissoc class-name)
@@ -148,7 +148,7 @@
              (rules-with-location env rules))
       class-name)))
 
-(defn return-classname
+(defn- return-classname
   [classname]
   (->> classname
        str
@@ -156,7 +156,7 @@
        str/join
        keyword))
 
-(defn c-fn
+(defn- c-fn
   [env rs]
   (let [{:keys [media-rules rules]} (divide-rules rs)
         class-name (or (create-rules env rules)
@@ -197,7 +197,6 @@
       :else (and (compute-rules rules)
                  (compute-media-rules media-rules)))))
 
-(defn prettify [s]
   (->> s
        (#(str/replace % #"\n" ""))
        (#(str/replace % #"\s{2,}" " "))
@@ -208,8 +207,9 @@
                        :else (conj acc v)))
                [])
        str/join))
+(defn- prettify [s]
 
-(defn css-media-styles
+(defn- css-media-styles
   ([]
    (css-media-styles @media-styles))
   ([media-styles]
@@ -219,7 +219,7 @@
         garden.core/css
         prettify)))
 
-(defn css-rules
+(defn- css-rules
   ([] (css-rules @styles))
   ([styles]
    (garden.core/css
