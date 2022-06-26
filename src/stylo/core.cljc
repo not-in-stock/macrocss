@@ -165,6 +165,8 @@
     (return-classname class-name)))
 
 (defmacro c
+  "A macro that generates a class based on `rules`
+  and returns a name of a generated class or location in code and properties."
   [& rules]
   (c-fn &env rules))
 
