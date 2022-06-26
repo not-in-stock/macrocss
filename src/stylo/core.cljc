@@ -197,17 +197,30 @@
       :else (and (compute-rules rules)
                  (compute-media-rules media-rules)))))
 
-  (->> s
-       (#(str/replace % #"\n" ""))
-       (#(str/replace % #"\s{2,}" " "))
-       (reduce (fn [acc v]
-                 (cond (or (= \{ v)
-                           (= \} v)) (conj acc v \newline)
-                       (= \@ v) (conj acc \newline \newline v)
-                       :else (conj acc v)))
-               [])
-       str/join))
-(defn- prettify [s]
+(defn- join-lines
+  [s]
+  (str/replace s #"\n" ""))
+
+(defn- collapse-adjacent-spaces
+  [s]
+  (str/replace s #"\s{2,}" " "))
+
+(defn- format-style-definitions
+  [css-string]
+  (reduce (fn [acc v]
+            (cond (or (= \{ v)
+                      (= \} v)) (conj acc v \newline)
+                  (= \@ v) (conj acc \newline \newline v)
+                  :else (conj acc v)))
+          []
+          css-string))
+
+(defn- prettify [css-string]
+  (-> css-string
+      join-lines
+      collapse-adjacent-spaces
+      format-style-definitions
+      str/join))
 
 (defn- css-media-styles
   ([]
