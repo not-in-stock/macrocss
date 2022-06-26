@@ -1,27 +1,26 @@
 (ns stylo.core
-  (:require
-   [garden.core]
-   [garden.stylesheet]
-   [clojure.string :as str]
-   [stylo.rule :refer [rule join-rules]]
-   [stylo.tailwind.preflight]
-   [stylo.tailwind.accessibility]
-   [stylo.tailwind.background]
-   [stylo.tailwind.border]
-   [stylo.tailwind.effect]
-   [stylo.tailwind.flex]
-   [stylo.tailwind.grid]
-   [stylo.tailwind.interactivity]
-   [stylo.tailwind.layout]
-   [stylo.tailwind.sizing]
-   [stylo.tailwind.spacing]
-   [stylo.tailwind.svg]
-   [stylo.tailwind.table]
-   [stylo.tailwind.transform]
-   [stylo.tailwind.transition]
-   [stylo.tailwind.typography]
-   [stylo.tailwind.variant]
-   [stylo.util :as u])
+  (:require [clojure.string :as str]
+            [garden.core]
+            [garden.stylesheet]
+            [stylo.rule :refer [rule join-rules]]
+            [stylo.tailwind.accessibility]
+            [stylo.tailwind.background]
+            [stylo.tailwind.border]
+            [stylo.tailwind.effect]
+            [stylo.tailwind.flex]
+            [stylo.tailwind.grid]
+            [stylo.tailwind.interactivity]
+            [stylo.tailwind.layout]
+            [stylo.tailwind.preflight]
+            [stylo.tailwind.sizing]
+            [stylo.tailwind.spacing]
+            [stylo.tailwind.svg]
+            [stylo.tailwind.table]
+            [stylo.tailwind.transform]
+            [stylo.tailwind.transition]
+            [stylo.tailwind.typography]
+            [stylo.tailwind.variant]
+            [stylo.util :as u])
   #?(:cljs (:require-macros [stylo.core])))
 
 (defonce
@@ -29,16 +28,18 @@
   styles
   (atom {}))
 
-(defonce media (atom {:screen {:screen true}
-                      :smartphone {:max-width "415px"}
-                      :ereader {:max-width "481px"}
-                      :p-tablets {:max-width "768px"}
-                      :l-tablets {:max-width "1025px"}
-                      :desktop {:min-width "1200px"}}))
 (defonce
   ^{:doc "An atom which holds CSS media rules for generated classes in a Garden format"}
   media-styles
   (atom {}))
+
+(defonce media
+  (atom {:screen {:screen true}
+         :smartphone {:max-width "415px"}
+         :ereader {:max-width "481px"}
+         :p-tablets {:max-width "768px"}
+         :l-tablets {:max-width "1025px"}
+         :desktop {:min-width "1200px"}}))
 
 (defn- garden-readable
   [media-rules]
@@ -127,9 +128,9 @@
   [class-name media-rules]
   (if-not (empty? media-rules)
     (->> media-rules
-       (mapv (partial apply rule))
-       (mapv (fn [f] (f class-name)))
-       (mapv (fn [g] (inject-media-rules class-name g))))
+         (mapv (partial apply rule))
+         (mapv (fn [f] (f class-name)))
+         (mapv (fn [g] (inject-media-rules class-name g))))
     (swap! media-styles dissoc class-name)))
 
 (defn- rules-with-location
@@ -193,11 +194,18 @@
                                          boolean))]
     (cond
       (and (empty? media-rules)
-           (empty? rules)) true
-      (empty? media-rules) (compute-rules rules)
-      (empty? rules) (compute-media-rules media-rules)
-      :else (and (compute-rules rules)
-                 (compute-media-rules media-rules)))))
+           (empty? rules))
+      true
+
+      (empty? media-rules)
+      (compute-rules rules)
+
+      (empty? rules)
+      (compute-media-rules media-rules)
+
+      :else
+      (and (compute-rules rules)
+           (compute-media-rules media-rules)))))
 
 (defn- join-lines
   [s]
