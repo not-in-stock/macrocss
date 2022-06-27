@@ -120,9 +120,9 @@
   [class-name garden-obj]
   (swap! *media-styles dissoc class-name)
   (swap! *media-styles assoc-in [class-name
-                                (-> garden-obj
-                                    :value
-                                    :media-queries)]
+                                 (-> garden-obj
+                                     :value
+                                     :media-queries)]
          garden-obj))
 
 (defn- create-media-rules
