@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [garden.core]
             [garden.stylesheet]
-            [stylo.rule :refer [rule join-rules]]
+            [stylo.rule :as rule]
             [stylo.tailwind.accessibility]
             [stylo.tailwind.background]
             [stylo.tailwind.border]
@@ -53,13 +53,13 @@
   (garden.stylesheet/at-media
    media-specs
    [[class-name (-> rules
-                    join-rules
+                    rule/join-rules
                     garden-readable)]]))
 
 (defn- defmediarules
   [media]
   (doseq [[k v] media]
-    (defmethod rule k [_ & rules]
+    (defmethod rule/rule k [_ & rules]
       (fn [class-name]
         (media-query v class-name rules)))))
 
@@ -107,13 +107,14 @@
 
 (defn- divide-rules
   [rules]
-  (reduce (fn [acc r]
-            (cond
-              (keyword? r) (update acc :rules conj r)
-              (-> r first media-rule?) (update acc :media-rules conj r)
-              :else (update acc :rules conj r)))
-          {:rules []
-           :media-rules []} rules))
+  (reduce
+   (fn [acc rule]
+     (cond
+       (keyword? rule) (update acc :rules conj rule)
+       (-> rule first media-rule?) (update acc :media-rules conj rule)
+       :else (update acc :rules conj rule)))
+   {:rules []
+    :media-rules []} rules))
 
 (defn- inject-media-rules
   [class-name garden-obj]
@@ -128,14 +129,16 @@
   [class-name media-rules]
   (if-not (empty? media-rules)
     (->> media-rules
-         (mapv (partial apply rule))
-         (mapv (fn [f] (f class-name)))
-         (mapv (fn [g] (inject-media-rules class-name g))))
+         (mapv (partial apply rule/rule))
+         (mapv (fn [f]
+                 (f class-name)))
+         (mapv (fn [g]
+                 (inject-media-rules class-name g))))
     (swap! *media-styles dissoc class-name)))
 
 (defn- rules-with-location
   [env rules]
-  (with-meta (join-rules rules)
+  (with-meta (rule/join-rules rules)
     {:location [(:name (:ns env))
                 (:line env)
                 (:column env)]}))
@@ -184,13 +187,13 @@
 
         compute-rules (fn [r]
                         (->> r
-                             join-rules
+                             rule/join-rules
                              (into [class-name])
                              garden.core/css
                              boolean))
         compute-media-rules (fn [m]
                               (->> m
-                                   (mapv (partial apply rule))
+                                   (mapv (partial apply rule/rule))
                                    (mapv (fn [f] (f class-name)))
                                    garden.core/css
                                    boolean))]
