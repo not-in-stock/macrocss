@@ -252,7 +252,8 @@
    (concat stylo.tailwind.preflight/preflight
            (->> styles
                 (sort-by (comp :location meta))
-                (mapv (fn [[k v]] (into [k] v)))))))
+                (mapv (fn [[k v]]
+                        (into [k] v)))))))
 
 (defn compile-styles
   [styles media-styles]
