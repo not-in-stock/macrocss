@@ -153,7 +153,8 @@
              (rules-with-location env rules))
       class-name)))
 
-(defn- return-classname
+(defn- normalize-classname
+  "Removes `.` form the begining of class name keyword"
   [classname]
   (-> classname
       name
@@ -166,7 +167,7 @@
         class-name (or (create-rules env rules)
                        (create-classname env media-rules))
         _ (create-media-rules class-name media-rules)]
-    (return-classname class-name)))
+    (normalize-classname class-name)))
 
 (defmacro c
   "A macro that generates a class based on `rules`
