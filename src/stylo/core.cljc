@@ -262,14 +262,6 @@
   (str (css-rules)
        (css-media-styles)))
 
-(defmacro mount-style
-  []
-  `(aset (or (.getElementById js/document "stylo")
-             (let [style# (.createElement js/document "style")]
-               (.setAttribute style# "id" "stylo")
-               (.appendChild js/document.head style#)
-               style#))
-         "innerHTML" ~(get-styles)))
 
 (defn compile-styles
   [styles media-styles]
