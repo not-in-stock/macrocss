@@ -38,6 +38,15 @@
        :cljs (/ (js/parseFloat n) (js/parseFloat d)))))
 
 (defn as-unit
+  "Converts a value to a preffered Garden units
+  - Units are converted to units
+  `(units/px 20) => 20px`
+  - Ratio strings are converted to percent
+   `\"3/4\" => \"75%\"`
+  - Other strings are converted to themselves
+   `\"20px\" => \"20px\"`
+  - Numbers are converted to units defined with `preferred-unit` -
+  units are adjusted to grid size if `:rem` is specified"
   ([v]
    (as-unit v :rem))
   ([v preferred-unit]
