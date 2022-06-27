@@ -48,7 +48,7 @@
               (conj acc [(keyword f) (second s)])
               (conj acc r))) [] media-rules))
 
-(defn media-query
+(defn- media-query
   [media-specs class-name rules]
   (garden.stylesheet/at-media
    media-specs
