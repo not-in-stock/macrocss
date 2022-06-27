@@ -1,20 +1,23 @@
 (ns stylo.util
   (:refer-clojure :exclude [format])
-  (:require
-   [garden.color :refer [hex->rgb]]
-   [garden.units :as units]
-   #?(:cljs [goog.string :as gstring])
-   #?(:cljs [goog.string.format])
-   #?(:clj [garden.def]))
-  #?(:cljs
-     (:require-macros [garden.def])))
+  (:require [garden.color :refer [hex->rgb]]
+            [garden.units :as units]
+            #?(:cljs [goog.string :as gstring])
+            #?(:cljs [goog.string.format])
+            #?(:clj [garden.def]))
+  #?(:cljs (:require-macros [garden.def])))
 
 (defn format
-  [fmt & args]
-  #?(:clj (apply clojure.core/format fmt args)
-     :cljs (apply gstring/format fmt args)))
+  "Crossplatform text format function"
+  [format-str & args]
+  #?(:clj (apply clojure.core/format format-str args)
+     :cljs (apply gstring/format format-str args)))
+
+(def ratio-regex
+  #"(-?\d+)/(\d+)")
 
 (defn with-alpha
+  "Converts CSS hex color to RGB value format also adding an alpha value and making it depending on CSS variable"
   [color variable]
   (if-let [{:keys [red green blue]} (hex->rgb color)]
     (format "rgba(%d,%d,%d,var(%s))"
@@ -22,13 +25,15 @@
     color))
 
 (defn str-ratio?
+  "Checks if a string has ratio format like `-22/2`, `11/8`, etc."
   [s]
   (and (string? s)
-       (re-matches #"(-?\d+)/(\d+)" s)))
+       (re-matches ratio-regex s)))
 
 (defn parse-str-ratio
+  "Cross platform function for parsing ratios form string."
   [s]
-  (let [[_ n d] (re-matches #"(-?\d+)/(\d+)" s)]
+  (let [[_ n d] (re-matches ratio-regex s)]
     #?(:clj (/ (Double/parseDouble n) (Double/parseDouble d))
        :cljs (/ (js/parseFloat n) (js/parseFloat d)))))
 
@@ -46,7 +51,6 @@
              :deg (units/deg v)
              :rem (units/rem (* v 0.25))
              :percent (units/percent v)))))
-
 
 (comment
   (garden.compiler/render-css (units/percent 42))
