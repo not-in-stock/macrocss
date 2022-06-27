@@ -155,11 +155,10 @@
 
 (defn- return-classname
   [classname]
-  (->> classname
-       str
-       (drop 2)
-       str/join
-       keyword))
+  (-> classname
+      name
+      (subs 1)
+      keyword))
 
 (defn- c-fn
   [env rs]
