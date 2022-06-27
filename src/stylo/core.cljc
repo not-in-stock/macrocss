@@ -24,16 +24,17 @@
   #?(:cljs (:require-macros [stylo.core])))
 
 (defonce
-  ^{:doc "An atom which holds CSS styles for generated classes in a Garden format"}
+  ^{:doc "An atom which holds CSS styles for generated classes in a Garden format."}
   *styles
   (atom {}))
 
 (defonce
-  ^{:doc "An atom which holds CSS media rules for generated classes in a Garden format"}
+  ^{:doc "An atom which holds CSS media rules for generated classes in a Garden format."}
   *media-styles
   (atom {}))
 
 (defonce *media
+  ^{:doc "An atom which contains predefined media rules for different screen sizes."}
   (atom {:screen {:screen true}
          :smartphone {:max-width "415px"}
          :ereader {:max-width "481px"}
