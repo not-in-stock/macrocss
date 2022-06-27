@@ -46,7 +46,8 @@
   (reduce (fn [acc [f s :as r]]
             (if (string? f)
               (conj acc [(keyword f) (second s)])
-              (conj acc r))) [] media-rules))
+              (conj acc r)))
+          [] media-rules))
 
 (defn- media-query
   [media-specs class-name rules]
