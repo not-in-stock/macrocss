@@ -182,9 +182,6 @@
                      (create-classname &env rules)
                      (create-classname &env media-rules))
 
-        compute-rules (fn [r] (->> r
-                                   join-rules
-                                   (into [class-name])
         compute-rules (fn [r]
                         (->> r
                              join-rules
