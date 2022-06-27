@@ -88,7 +88,7 @@
         (->> (apply hash-set)
              k))))
 
-(defn- create-located-classname
+(defn- location-based-class-name
   "Creates a class name string based on the namespace, line and column
   in the source code based on a macro env bindings.
   If bindings unavailable `nil` is returned."
@@ -99,15 +99,15 @@
               (:line env)
               (:column env))))
 
-(defn- create-hashed-classname
+(defn- hash-based-class-name
   "Creates a class name string based on a hashcode of supplied `rules`"
   [rules]
   (str ".c" (hash rules)))
 
 (defn- create-classname
   [env rules]
-  (keyword (or (create-located-classname env)
-               (create-hashed-classname rules))))
+  (keyword (or (location-based-class-name env)
+               (hash-based-class-name rules))))
 
 (defn- divide-rules
   "Divides rules and media query rules.
@@ -180,7 +180,7 @@
   (c-fn &env rules))
 
 (defmacro c-eco
-  "Uses only hashed version of classname. Is recomended for release purposes, because it minimizes resulting CSS file."
+  "Uses only hash based class names. Is recomended for release purposes, because it minimizes resulting CSS file."
   [& rules]
   (c-fn nil rules))
 
@@ -189,7 +189,6 @@
         class-name (if-not (empty? rules)
                      (create-classname &env rules)
                      (create-classname &env media-rules))
-
         compute-rules (fn [r]
                         (->> r
                              rule/join-rules
