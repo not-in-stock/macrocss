@@ -153,9 +153,7 @@
   (when-not (empty? rules)
     (let [class-name (create-classname env rules)]
       (swap! *styles dissoc class-name)
-      (swap! *styles assoc
-             class-name
-             (rules-with-location env rules))
+      (swap! *styles assoc class-name (rules-with-location env rules))
       class-name)))
 
 (defn- normalize-classname
