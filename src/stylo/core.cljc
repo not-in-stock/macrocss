@@ -257,11 +257,6 @@
                  (sort-by (comp :location meta))
                  (mapv (fn [[k v]] (into [k] v))))))))
 
-(defn get-styles
-  []
-  (str (css-rules)
-       (css-media-styles)))
-
 
 (defn compile-styles
   [styles media-styles]
