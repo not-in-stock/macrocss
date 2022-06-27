@@ -110,13 +110,15 @@
                (create-hashed-classname rules))))
 
 (defn- divide-rules
+  "Divides rules and media query rules.
+  Returns a map with keys `:rules` and `media-rules`"
   [rules]
   (reduce
    (fn [acc rule]
-     (cond
-       (keyword? rule) (update acc :rules conj rule)
-       (-> rule first media-rule?) (update acc :media-rules conj rule)
-       :else (update acc :rules conj rule)))
+     (if (and (sequential? rule)
+              (-> rule first media-rule?))
+       (update acc :media-rules conj rule)
+       (update acc :rules conj rule)))
    {:rules []
     :media-rules []} rules))
 
@@ -157,7 +159,8 @@
       class-name)))
 
 (defn- normalize-classname
-  "Removes `.` form the begining of class name keyword"
+  "Removes `.` form the begining of class name keyword
+  `:.class-name` `:class-name`"
   [classname]
   (-> classname
       name
