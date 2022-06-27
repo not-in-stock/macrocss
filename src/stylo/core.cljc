@@ -235,25 +235,20 @@
       str/join))
 
 (defn- css-media-styles
-  ([]
-   (css-media-styles @*media-styles))
-  ([media-styles]
-   (->> media-styles
-        vals
-        (mapcat vals)
-        garden.core/css
-        prettify)))
+  [media-styles]
+  (->> media-styles
+       vals
+       (mapcat vals)
+       garden.core/css
+       prettify))
 
 (defn- css-rules
-  ([]
-   (css-rules @*styles))
-  ([styles]
-   (garden.core/css
-    (concat stylo.tailwind.preflight/preflight
-            (->> styles
-                 (sort-by (comp :location meta))
-                 (mapv (fn [[k v]] (into [k] v))))))))
-
+  [styles]
+  (garden.core/css
+   (concat stylo.tailwind.preflight/preflight
+           (->> styles
+                (sort-by (comp :location meta))
+                (mapv (fn [[k v]] (into [k] v)))))))
 
 (defn compile-styles
   [styles media-styles]
