@@ -89,6 +89,9 @@
              k))))
 
 (defn- create-located-classname
+  "Creates a class name string based on the namespace, line and column
+  in the source code based on a macro env bindings.
+  If bindings unavailable `nil` is returned."
   [env]
   (when-let [ns-name (get-in env [:ns :name])]
     (u/format ".%s-%s-%s"
@@ -97,10 +100,9 @@
               (:column env))))
 
 (defn- create-hashed-classname
+  "Creates a class name string based on a hashcode of supplied `rules`"
   [rules]
-  (->> rules
-       hash
-       (str ".c")))
+  (str ".c" (hash rules)))
 
 (defn- create-classname
   [env rules]
