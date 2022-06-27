@@ -1,7 +1,6 @@
 (ns stylo.shadow
-  (:require
-    [stylo.core]
-    [clojure.java.io :as io]))
+  (:require [stylo.core]
+            [clojure.java.io :as io]))
 
 (defn reload
   {:shadow.build/stage :flush}
