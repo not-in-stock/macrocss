@@ -185,13 +185,18 @@
         compute-rules (fn [r] (->> r
                                    join-rules
                                    (into [class-name])
+        compute-rules (fn [r]
+                        (->> r
+                             join-rules
+                             (into [class-name])
+                             garden.core/css
+                             boolean))
+        compute-media-rules (fn [m]
+                              (->> m
+                                   (mapv (partial apply rule))
+                                   (mapv (fn [f] (f class-name)))
                                    garden.core/css
-                                   boolean))
-        compute-media-rules (fn [m] (->> m
-                                         (mapv (partial apply rule))
-                                         (mapv (fn [f] (f class-name)))
-                                         garden.core/css
-                                         boolean))]
+                                   boolean))]
     (cond
       (and (empty? media-rules)
            (empty? rules))
