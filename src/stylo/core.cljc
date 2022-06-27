@@ -222,13 +222,10 @@
 
 (defn- format-style-definitions
   [css-string]
-  (reduce (fn [acc v]
-            (cond (or (= \{ v)
-                      (= \} v)) (conj acc v \newline)
-                  (= \@ v) (conj acc \newline \newline v)
-                  :else (conj acc v)))
-          []
-          css-string))
+  (str/replace css-string #"\{|\}|\@"
+               {"}" "}\n"
+                "{" "{\n"
+                "@" "\n\n@"}))
 
 (defn- prettify [css-string]
   (-> css-string
