@@ -3,10 +3,10 @@
             [stylo.core :as stylo]))
 
 (deftest class-generation
-  (let [styles (atom {})
-        media-styles (atom {})]
-    (with-redefs [stylo/styles styles
-                  stylo/media-styles media-styles]
+  (let [*styles (atom {})
+        *media-styles (atom {})]
+    (with-redefs [stylo/*styles *styles
+                  stylo/*media-styles *media-styles]
      (are [created-class] (true? created-class)
        (c? [:text :blue-300] [:smartphone [:text :blue-500]])
        (c? [:smartphone [:text :blue-500] {:font-weight "500"}]

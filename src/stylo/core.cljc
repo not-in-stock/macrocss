@@ -25,15 +25,15 @@
 
 (defonce
   ^{:doc "An atom which holds CSS styles for generated classes in a Garden format"}
-  styles
+  *styles
   (atom {}))
 
 (defonce
   ^{:doc "An atom which holds CSS media rules for generated classes in a Garden format"}
-  media-styles
+  *media-styles
   (atom {}))
 
-(defonce media
+(defonce *media
   (atom {:screen {:screen true}
          :smartphone {:max-width "415px"}
          :ereader {:max-width "481px"}
@@ -63,25 +63,25 @@
       (fn [class-name]
         (media-query v class-name rules)))))
 
-(defmediarules @media)
+(defmediarules @*media)
 
 (defn set-own-mediarules!
   [rules]
-  (reset! media {})
-  (swap! merge media rules)
-  (defmediarules @media)
-  @media)
+  (reset! *media {})
+  (swap! merge *media rules)
+  (defmediarules @*media)
+  @*media)
 
 (defn extend-media-rules!
   [rules]
-  (swap! merge media rules)
-  (defmediarules @media)
-  @media)
+  (swap! merge *media rules)
+  (defmediarules @*media)
+  @*media)
 
 (defn- media-rule?
   [k]
   (when (keyword? k)
-    (-> @media
+    (-> @*media
         keys
         (->> (apply hash-set)
              k))))
@@ -117,8 +117,8 @@
 
 (defn- inject-media-rules
   [class-name garden-obj]
-  (swap! media-styles dissoc class-name)
-  (swap! media-styles assoc-in [class-name
+  (swap! *media-styles dissoc class-name)
+  (swap! *media-styles assoc-in [class-name
                                 (-> garden-obj
                                     :value
                                     :media-queries)]
@@ -131,7 +131,7 @@
          (mapv (partial apply rule))
          (mapv (fn [f] (f class-name)))
          (mapv (fn [g] (inject-media-rules class-name g))))
-    (swap! media-styles dissoc class-name)))
+    (swap! *media-styles dissoc class-name)))
 
 (defn- rules-with-location
   [env rules]
@@ -143,8 +143,8 @@
 (defn- create-rules [env rules]
   (when-not (empty? rules)
     (let [class-name (create-classname env rules)]
-      (swap! styles dissoc class-name)
-      (swap! styles assoc
+      (swap! *styles dissoc class-name)
+      (swap! *styles assoc
              class-name
              (rules-with-location env rules))
       class-name)))
@@ -236,7 +236,7 @@
 
 (defn- css-media-styles
   ([]
-   (css-media-styles @media-styles))
+   (css-media-styles @*media-styles))
   ([media-styles]
    (->> media-styles
         vals
@@ -245,7 +245,8 @@
         prettify)))
 
 (defn- css-rules
-  ([] (css-rules @styles))
+  ([]
+   (css-rules @*styles))
   ([styles]
    (garden.core/css
     (concat stylo.tailwind.preflight/preflight

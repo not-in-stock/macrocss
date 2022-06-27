@@ -1,7 +1,7 @@
 (ns rule-test
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [stylo.rule :refer [rule defrules]]
-            [stylo.core :refer [c c? styles media-styles]]
+            [stylo.core :refer [c c? *styles *media-styles]]
             [garden.core]))
 
 (def rule-atom (atom {:old nil
@@ -15,8 +15,8 @@
 (use-fixtures :each clear)
 
 (defn clear-styles [t]
-  (reset! styles {})
-  (reset! media-styles {})
+  (reset! *styles {})
+  (reset! *media-styles {})
   (t))
 
 (use-fixtures :each clear-styles)
