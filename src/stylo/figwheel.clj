@@ -11,7 +11,9 @@
     (when-let [env (figwheel/repl-env build-id)]
       (cljs.repl/evaluate env "<stylo>" 1
                           (str "document.getElementById('stylo').innerHTML = "
-                               (json/generate-string (stylo.core/get-styles)))))))
+                               (json/generate-string (stylo.core/compile-styles
+                                                      @stylo.core/*styles
+                                                      @stylo.core/*media-styles)))))))
 
 (comment
   ((make-reload-hook "dev")))

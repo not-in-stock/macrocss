@@ -1,8 +1,6 @@
 (ns stylo.shadow
-  (:require
-    [stylo.core]
-    [clojure.java.io :as io]))
-
+  (:require [stylo.core]
+            [clojure.java.io :as io]))
 
 (defn reload
   {:shadow.build/stage :flush}
@@ -10,6 +8,6 @@
   (future
     (let [f (io/file output-file)]
       (io/make-parents f)
-      (spit f (stylo.core/compile-styles @stylo.core/styles
-                                         @stylo.core/media-styles))))
+      (spit f (stylo.core/compile-styles @stylo.core/*styles
+                                         @stylo.core/*media-styles))))
   build-state)

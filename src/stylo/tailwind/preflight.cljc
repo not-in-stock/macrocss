@@ -1,4 +1,7 @@
 (ns stylo.tailwind.preflight
+  "Represents a set of base styles in macrocss format.
+   Preflight styles mostly reset browser default styles of HTML elements
+  to elimitnate inconsitencsies across diffrenet browsers."
   (:require [stylo.tailwind.color :refer [colors]]))
 
 
