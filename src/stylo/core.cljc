@@ -256,6 +256,8 @@
                         (into [k] v)))))))
 
 (defn compile-styles
-  [styles media-styles]
-  (str (css-rules styles)
-       (css-media-styles media-styles)))
+  ([styles]
+    (str (css-rules styles)))
+  ([styles media-styles]
+    (str (css-rules styles)
+       (css-media-styles media-styles))))
